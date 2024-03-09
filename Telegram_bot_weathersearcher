@@ -1,0 +1,50 @@
+import telebot
+import requests
+
+bot = telebot.TeleBot('6899780742:AAFgQPNjiKwMi3htedIHnEvhoFJdhlOhVYI');
+start_txt = 'Привет! Здесь можно узнать прогноз погоды для любого города мира! Какой город вас интересует?'
+
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    bot.send_message(message.from_user.id, start_txt, parse_mode='Markdown')
+
+@bot.message_handler(content_types=['text'])
+def weather(message):
+	#print('1')
+	city = message.text
+	url = 'https://api.openweathermap.org/data/2.5/weather?q='+city+'&units=metric&lang=ru&appid=79d1ca96933b0328e1c7e3e7a26cb347'
+	
+	#print('2')
+	weather_data = requests.get(url).json()
+	temperature = weather_data['main']['temp']
+	#print('temp')
+	temperature_feels = weather_data['main']['feels_like']
+	#print('temp_feels')
+	wind_speed = weather_data['wind']['speed']
+	#print('wind_spped')
+	weather_clouds = weather_data['weather'][0]['description']
+	#print('clouds')
+	
+	
+	#print('3')
+	w_now = 'Сейчас в городе ' + city + ' ' + str(temperature) + ' °C'
+	w_feels = 'Ощущается как ' + str(temperature_feels) + ' °C'
+	w_clouds = 'Состояние неба: ' + str(weather_clouds)
+	w_speed = 'Скорость ветра: ' + str(wind_speed)
+	
+	
+	#print('4')
+	bot.send_message(message.from_user.id, w_now)
+	bot.send_message(message.from_user.id, w_feels)
+	bot.send_message(message.from_user.id, w_clouds)
+	bot.send_message(message.from_user.id, w_speed)
+	#print('5')
+	
+if __name__ == '__main__':
+    while True:
+        try:
+            bot.polling(none_stop=True, interval=0)
+        except Exception as e: 
+            print('❌❌❌❌❌ Сработало исключение! ❌❌❌❌❌')
+
