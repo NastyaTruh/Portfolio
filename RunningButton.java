@@ -13,7 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class MainCode extends JFrame {
-
+	
 	public MainCode() {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setSize(800, 800);
@@ -33,11 +33,11 @@ public class MainCode extends JFrame {
 		Button.setBounds(350, 100, 100, 50);
 		Panel.add(Button);
 
-		Logic(Button);
+		Logic(Button, Panel);
 	}
 	
 	
-	void Logic(JButton Button) {
+	void Logic(JButton Button, JPanel Panel) {
 		
 		Button.addActionListener(new ActionListener() {
 			@Override
@@ -60,21 +60,37 @@ public class MainCode extends JFrame {
 					y = Math.random() * 1000;
 				}
 				
-				int count = Integer.parseInt(Button.getText());
+				String ButtonText = Button.getText();
+				//см. строку 82 для настройки числа кнопок
+				if (Integer.parseInt(ButtonText) == 4-1) {
+					Button.setVisible(false);
+					Panel.remove(Button);
+				}
+				
+				int count = Integer.parseInt(ButtonText);
 				count += 1;
 				Button.setText(Integer.toString(count));
 				
 				Random Random = new Random();
-		        int RandomNumber = Random.nextInt(256*256*256+1);
+		        int RandomNumber = Random.nextInt(256*256*256);
 				Color ButtonColor = new Color(RandomNumber);
 				
 				Button.setBackground(ButtonColor);
 				Button.setBounds((int)x, (int)y, 100, 50);
+				
+				
+				if (count % 2 == 0) {
+					JButton newButton = new JButton();
+					newButton.setBounds(350, 100, 100, 50);
+					Panel.add(newButton);
+					newButton.setVisible(true);
+					Logic(newButton, Panel);
+				}
+				
 			}
 		});
 		
 	}
-	
 	
 	public static void main(String []Args) {
 		new MainCode();
